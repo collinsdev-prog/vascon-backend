@@ -7,7 +7,7 @@ export const RedisProvider: Provider = {
   useFactory: (configService: ConfigService) => {
     // Get Redis configuration from config service
     const host = configService.get('REDISHOST') || 'localhost';
-    const port = parseInt(configService.get('REDIS_PORT') || '6379', 10);
+    const port = parseInt(configService.get('REDISPORT') || '6379', 10);
 
     // Create and return Redis client
     return new Redis({
