@@ -5,6 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { MysqlService } from './mysql/mysql.service';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 // import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -12,10 +13,27 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: 'https://vascon-frontend.vercel.app',
+  const allowedOrigins = [
+    'https://vascon-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+  ];
+
+  const corsOptions: CorsOptions = {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allowedOrigin?: string | boolean) => void,
+    ) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
-  });
+  };
+
+  app.enableCors(corsOptions);
 
   // ————————————————
   // 1. VERIFY RAW MYSQL CONNECTION
