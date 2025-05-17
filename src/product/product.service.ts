@@ -18,8 +18,14 @@ export class ProductService {
    * Get all products (public)
    */
   async findAll() {
-    return this.mysql.query('SELECT * FROM products WHERE isDeleted = FALSE');
+    return this.mysql.query(
+      `SELECT p.*, u.username AS sellerName
+     FROM products p
+     JOIN users u ON p.sellerId = u.id
+     WHERE p.isDeleted = FALSE`,
+    );
   }
+
   /**
    * Get a specific product by ID (public)
    */
